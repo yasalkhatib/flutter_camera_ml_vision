@@ -41,6 +41,8 @@ class CameraMlVision<T> extends StatefulWidget {
   final CameraLensDirection cameraLensDirection;
   final ResolutionPreset resolution;
   final Function onDispose;
+  
+  final MediaQuery screenSize;
 
   CameraMlVision({
     Key key,
@@ -52,6 +54,7 @@ class CameraMlVision<T> extends StatefulWidget {
     this.cameraLensDirection = CameraLensDirection.back,
     this.resolution,
     this.onDispose,
+    this.screenSize,
   }) : super(key: key);
 
   @override
@@ -252,14 +255,14 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>> {
       );
     }
     return VisibilityDetector(
-      child: FittedBox(
-        alignment: Alignment.center,
-        fit: BoxFit.cover,
-        child: SizedBox(
-          width: _cameraController.value.previewSize.height *
-              _cameraController.value.aspectRatio,
-          height: _cameraController.value.previewSize.height,
-          child: cameraPreview,
+      child: Container(
+        //alignment: Alignment.center,
+        //fit: BoxFit.cover,
+        child: Transform.scale(
+          scale: _getImageZoom(widget.screenSize, _cameraController.value.previewSize),
+          child: Center(
+            child: cameraPreview,
+          ),
         ),
       ),
       onVisibilityChanged: (VisibilityInfo info) {
@@ -275,6 +278,17 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>> {
       },
       key: _visibilityKey,
     );
+  }
+  
+  double _getImageZoom(MediaQueryData data, Size previewSize) {
+    final double logicalWidth = data.size.width;
+    final double logicalHeight = previewSize.aspectRatio * logicalWidth;
+
+    final EdgeInsets padding = data.padding;
+    final double maxLogicalHeight =
+        data.size.height - padding.top - padding.bottom;
+
+    return maxLogicalHeight / logicalHeight;
   }
 
   void _processImage(CameraImage cameraImage) async {
