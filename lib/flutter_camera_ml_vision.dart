@@ -42,7 +42,7 @@ class CameraMlVision<T> extends StatefulWidget {
   final ResolutionPreset resolution;
   final Function onDispose;
   
-  final MediaQuery screenSize;
+  final MediaQueryData screenSize;
 
   CameraMlVision({
     Key key,
