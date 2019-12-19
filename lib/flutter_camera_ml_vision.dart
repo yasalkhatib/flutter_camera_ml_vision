@@ -283,7 +283,7 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>> {
       try {
         final T results =
             await _detect<T>(cameraImage, widget.detector, _rotation);
-        widget.onResult(results);
+        widget.onResult(results, Size(cameraImage.width.toDouble(), cameraImage.height.toDouble()));
       } catch (ex, stack) {
         debugPrint('$ex, $stack');
       }
